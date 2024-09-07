@@ -21,4 +21,4 @@ class SqlAlchemyRepository(AbstractRepository):
         self.session.add(task)
 
     def get(self, reference):
-        return self.session.query(model.Task).filter_by(reference=reference).one
+        return self.session.query(model.Task).filter_by(reference=reference).one()

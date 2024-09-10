@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, Integer, String, DateTime, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import registry
-from model import Status, Task
+from .model import Status, Task
 
 mapper_registry = registry()
 metadata = mapper_registry.metadata
@@ -13,4 +13,6 @@ task_table = Table(
     Column("date_start", DateTime),
     Column("date_end", DateTime),
 )
-mapper_registry.map_imperatively(Task, task_table)
+def start_mappers():
+    mapper_registry.map_imperatively(Task, task_table)
+

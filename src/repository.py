@@ -8,7 +8,7 @@ class AbstractRepository(ABC):
     def add(self, task: model.Task):
         raise NotImplementedError
 
-    def get(self, reference: str) -> model.Task:
+    def get(self, id: int) -> model.Task:
         raise NotImplementedError
 
 
@@ -20,5 +20,5 @@ class SqlAlchemyRepository(AbstractRepository):
     def add(self, task):
         self.session.add(task)
 
-    def get(self, reference):
-        return self.session.query(model.Task).filter_by(reference=reference).one()
+    def get(self, id):
+        return self.session.query(model.Task).filter_by(id=id).one()

@@ -16,6 +16,7 @@ def engine_db():
 
 @pytest.fixture(scope='session',autouse=True)
 def session(engine_db):
+    clear_mappers()
     start_mappers()
     yield sessionmaker(bind=engine_db)()
     clear_mappers()

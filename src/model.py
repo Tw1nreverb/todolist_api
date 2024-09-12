@@ -12,9 +12,11 @@ class Status(str, Enum):
 class Task:
 
     def __init__(self,
+                 id: int,
                  name: str,
                  date_start: datetime | None = None,
                  date_end: datetime | None = None) -> None:
+        self.__id = id
         self.__name = name
         self.__date_start = date_start if date_start else datetime.now(
             timezone.utc)

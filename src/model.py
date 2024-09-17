@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from enum import Enum
 
-
 class Status(str, Enum):
     in_progress = 'in_progress'
     to_do = 'to-do'

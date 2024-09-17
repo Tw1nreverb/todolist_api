@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-from . import model
-
+from src.model import Task 
+from sqlalchemy import select
 
 class AbstractRepository(ABC):
 
     @abstractmethod
-    def add(self, task: model.Task):
+    def add(self, task: Task):
         raise NotImplementedError
 
-    def get(self, id: int) -> model.Task:
+    async def get(self, id: int) -> Task:
         raise NotImplementedError
 
 
@@ -20,5 +20,8 @@ class SqlAlchemyRepository(AbstractRepository):
     def add(self, task):
         self.session.add(task)
 
-    def get(self, id):
-        return self.session.query(model.Task).filter_by(id=id).one()
+    async def get(self, id):
+        statement = select(Task).filter_by(id=id)
+        execute = await self.session.execute(statement)
+        result = execute.scalars().one()
+        return result

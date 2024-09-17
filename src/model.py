@@ -16,32 +16,27 @@ class Task:
         date_start: datetime | None = None,
         date_end: datetime | None = None,
     ) -> None:
-        self.__name = name
-        self.__date_start = date_start if date_start else datetime.now(timezone.utc)
-        self.__date_end = date_end
-        self.__status = (
+        self.name = name
+        self.date_start = date_start if date_start else datetime.now(timezone.utc)
+        self.date_end = date_end
+        self.status = (
             Status.in_progress
             if datetime.now(timezone.utc) >= date_start
             else Status.to_do
         )
 
     def to_do(self) -> None:
-        self.__status = Status.to_do
+        self.status = Status.to_do
 
     def complete(self) -> None:
-        self.__status = Status.complete
+        self.status = Status.complete
 
     def cancel(self) -> None:
-        self.__status = Status.canceled
+        self.status = Status.canceled
 
     def in_progress(self) -> None:
-        self.__status = Status.in_progress
+        self.status = Status.in_progress
 
-    def get_status(self) -> Status:
-        return self.__status
-
-    def get_name(self) -> str:
-        return self.__name
 
 
 class User:

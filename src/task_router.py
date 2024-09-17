@@ -9,7 +9,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
-async def show_task():
-    task = await get_task(1)
+@router.get("/{id}")
+async def show_task(id:int):
+    task = await get_task(id)
     return task

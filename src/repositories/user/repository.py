@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from src.model import User 
+from src.model import User
 from sqlalchemy import select
 
 
 class AbstractRepository(ABC):
     @abstractmethod
-    def add(self, user: User) -> None:
+    def add(self, user: User):
         raise NotImplementedError
 
     async def get(self, email: str) -> User:
@@ -16,11 +16,11 @@ class SqlAlchemyRepository(AbstractRepository):
     def __init__(self, session) -> None:
         self.session = session
 
-    def add(self, user) -> None:
+    def add(self, user: User):
         self.session.add(user)
 
     async def get(self, email: str) -> User:
         statement = select(User).filter_by(email=email)
         execute = await self.session.execute(statement)
-        result = execute.scalars().one()
+        result = execute.scalars().first()
         return result

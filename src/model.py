@@ -38,10 +38,7 @@ class Task:
         self.status = Status.in_progress
 
 
-
 class User:
-    def __init__(self, name: str, password: str, email: str) -> None:
-        self.name = name
+    def __init__(self, email: str, password: str) -> None:
         self.password = password
         self.email = email
-

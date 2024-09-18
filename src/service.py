@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel
@@ -20,8 +21,7 @@ class TaskDTO(BaseModel):
     date_end: datetime
 
 
-class UserDTO(BaseModel):
-    id: int
+class AddUserDTO(BaseModel):
     email: str
     password: str
 
@@ -70,12 +70,26 @@ def task_to_DTO(task: Task) -> TaskDTO:
     )
 
 
-def create_access_token(data: dict) -> str:
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(days=30)
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta 
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=30)
     to_encode.update({"exp": expire})
     auth_data = get_auth_data()
     encode_jwt = jwt.encode(
         to_encode, auth_data["secret_key"], algorithm=auth_data["algorithm"]
     )
     return encode_jwt
+
+
+async def authenticated_user(email: str, password: str) -> User | None:
+    uow = UserSqlAlchemyUOW(async_session_maker)
+    user: User
+    async with uow:
+        user = await uow.users.get(email)
+        await uow.commit()
+    if user == None or not verify_password(password, user.password):
+        return None
+    return user

@@ -41,9 +41,7 @@ class Task:
 
 class User:
     def __init__(self, name: str, password: str, email: str) -> None:
-        self.__name = name
-        self.__password = password
-        self.__email = email
+        self.name = name
+        self.password = password
+        self.email = email
 
-    def get_password(self) -> str:
-        return self.__password

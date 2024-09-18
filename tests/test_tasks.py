@@ -8,10 +8,10 @@ def test_create_task_and_check_status():
                                     tzinfo=timezone.utc),
                 date_end=datetime(2024, 10, 10))
 
-    assert task.get_status() == Status.in_progress 
+    assert task.status == Status.in_progress 
     task.to_do()
-    assert task.get_status() == Status.to_do 
+    assert task.status == Status.to_do 
     task.complete()
-    assert task.get_status() == Status.complete 
+    assert task.status == Status.complete 
     task.cancel()
-    assert task.get_status() == Status.canceled 
+    assert task.status == Status.canceled 

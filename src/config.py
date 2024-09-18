@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASS: str
-
+    SECRET_KEY: str
+    ALGORITHM: str
     @property
     def DB_URL(self):
         return f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
@@ -17,3 +18,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings() # pyright: ignore 
+def get_auth_data():
+    return {'secret_key':settings.SECRET_KEY,'algorithm':settings.ALGORITHM}

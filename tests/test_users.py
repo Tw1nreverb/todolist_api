@@ -1,5 +1,5 @@
 from src.model import User
-from src.service import get_hashed_password
+from src.service import get_password_hash
 import bcrypt
 def test_user_hash_password():
     user = User(
@@ -7,5 +7,5 @@ def test_user_hash_password():
         password='qwerty123',
         email='index@mail.ru',
     )
-    user_hashed_password = get_hashed_password(user.get_password())
+    user_hashed_password = get_password_hash(user.get_password())
     assert bcrypt.checkpw(user.get_password().encode(),user_hashed_password)

@@ -1,12 +1,12 @@
 import abc
 
 from sqlalchemy.orm import clear_mappers
-from src import repository
+from src.repositories.user import repository
 from src.orm import start_mappers
 
 
 class AbstractUOW:
-    tasks: repository.AbstractRepository
+    users: repository.AbstractRepository
 
     async def __aexit__(self, *args):
         await self.rollback()
@@ -27,7 +27,7 @@ class SqlAlchemyUOW(AbstractUOW):
     async def __aenter__(self):
         start_mappers()
         self._session = self._async_session_maker()
-        self.tasks = repository.SqlAlchemyRepository(self._session)
+        self.users = repository.SqlAlchemyRepository(self._session)
         return self
 
     async def __aexit__(self, *args):

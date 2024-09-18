@@ -13,6 +13,14 @@ task_table = Table(
     Column("date_start", DateTime),
     Column("date_end", DateTime),
 )
+user_table = Table(
+    "user",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("email", String(100)),
+    Column("password", String(100)),
+)
+
+
 def start_mappers():
     mapper_registry.map_imperatively(Task, task_table)
-

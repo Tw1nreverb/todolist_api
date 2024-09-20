@@ -1,14 +1,14 @@
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from src.service import (
-    AddUserDTO,
+from src.logic.service import (
     add_user,
-    authenticated_user,
+    get_authenticated_user,
     create_access_token,
-    get_password_hash,
     get_user_by_email,
 )
+from src.logic.hash import get_password_hash
+from src.logic.dto import AddUserDTO
 
 router = APIRouter(
     prefix="/user",
@@ -31,11 +31,11 @@ async def register_user(user_data: AddUserDTO):
 
 
 @router.post("/login")
-async def auth_user(user_data: OAuth2PasswordRequestForm = Depends()):
-    auth_user = await authenticated_user(
+async def login_user(user_data: OAuth2PasswordRequestForm = Depends()):
+    auth_user = await get_authenticated_user(
         email=user_data.username, password=user_data.password
     )
-    if auth_user == None:
+    if auth_user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неверная почта или логин",

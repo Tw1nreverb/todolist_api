@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.service import get_task
+from src.logic.service import get_task
 
 
 router = APIRouter(

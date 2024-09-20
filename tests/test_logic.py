@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from src.model import Status, Task
+from domain.model import Status, Task
 
 
 def test_in_progress_to_do_status():

@@ -2,7 +2,7 @@ import abc
 
 from sqlalchemy.orm import clear_mappers
 from src.repositories.task import repository
-from src.orm import start_mappers
+from src.db.orm import start_mappers
 
 
 class AbstractUOW:

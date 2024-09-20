@@ -1,5 +1,5 @@
-from src.model import User
-from src.service import get_password_hash
+from domain.model import User
+from src.logic.hash import get_password_hash
 import bcrypt
 def test_user_hash_password():
     user = User(

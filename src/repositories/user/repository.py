@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.model import User
+from domain.model import User
 from sqlalchemy import select
 
 

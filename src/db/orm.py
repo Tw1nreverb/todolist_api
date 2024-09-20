@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, Integer, String, DateTime, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import registry
-from src.model import Status, Task, User
+from domain.model import Status, Task, User
 
 mapper_registry = registry()
 metadata = mapper_registry.metadata

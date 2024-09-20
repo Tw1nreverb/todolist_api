@@ -1,37 +1,13 @@
-from datetime import datetime
 from typing import Optional
 from jose import jwt
 from datetime import datetime, timedelta, timezone
-from pydantic import BaseModel
-from passlib.context import CryptContext
-from src.config import get_auth_data
-from src.model import Status, Task, User
+from src.settings.config import get_auth_data
+from src.logic.dto import TaskDTO, task_to_DTO
+from src.logic.hash import verify_password
+from domain.model import Task, User
 from src.uow.task.uow import SqlAlchemyUOW as TaskSqlAlchemyUOW
 from src.uow.user.uow import SqlAlchemyUOW as UserSqlAlchemyUOW
-from src.session import async_session_maker
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-class TaskDTO(BaseModel):
-    id: int
-    name: str
-    status: Status
-    date_start: datetime
-    date_end: datetime
-
-
-class AddUserDTO(BaseModel):
-    email: str
-    password: str
-
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+from src.db.session import async_session_maker
 
 
 async def get_task(id: int) -> TaskDTO:
@@ -60,20 +36,10 @@ async def add_user(user_dict):
         await uow.commit()
 
 
-def task_to_DTO(task: Task) -> TaskDTO:
-    return TaskDTO(
-        id=task.id,  # pyright: ignore
-        name=task.name,
-        status=task.status,
-        date_start=task.date_start,
-        date_end=task.date_end,  # pyright: ignore
-    )
-
-
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta 
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=30)
     to_encode.update({"exp": expire})
@@ -84,12 +50,12 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     return encode_jwt
 
 
-async def authenticated_user(email: str, password: str) -> User | None:
+async def get_authenticated_user(email: str, password: str) -> User | None:
     uow = UserSqlAlchemyUOW(async_session_maker)
     user: User
     async with uow:
         user = await uow.users.get(email)
         await uow.commit()
-    if user == None or not verify_password(password, user.password):
+    if user is None or not verify_password(password, user.password):
         return None
     return user

@@ -8,6 +8,8 @@ class TestSettings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASS: str
+    SECRET_KEY: str
+    ALGORITHM: str
 
     @property
     def DB_URL(self):

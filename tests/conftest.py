@@ -3,7 +3,7 @@ from sqlalchemy.orm import clear_mappers, sessionmaker
 from src.settings.test_config import test_settings
 from sqlalchemy import create_engine
 from src.db.orm import metadata, start_mappers
-from main import app
+from src.main import app
 from fastapi.testclient import TestClient
 
 

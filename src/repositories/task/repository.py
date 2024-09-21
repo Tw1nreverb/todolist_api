@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from domain.model import Task
+from src.domain.model import Task
 from sqlalchemy import select
 
 

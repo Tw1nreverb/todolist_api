@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from domain.model import Status, Task
+from src.domain.model import Status, Task
 
 
 class TaskDTO(BaseModel):

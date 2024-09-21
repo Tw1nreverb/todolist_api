@@ -1,12 +1,11 @@
-from src.logic.dto import TaskDTO, task_to_DTO
 from src.domain.model import Task, User
-from src.uow.task.uow import SqlAlchemyUOW as TaskSqlAlchemyUOW
-from src.uow.user.uow import SqlAlchemyUOW as UserSqlAlchemyUOW
-from src.db.session import async_session_maker
+from src.logic.dto import TaskDTO, task_to_DTO
+from src.logic.hash import get_password_hash
+from src.uow.task.uow import AbstractUOW as TaskAbstractUOW
+from src.uow.user.uow import AbstractUOW as UserAbstractUOW
 
 
-async def get_task(id: int) -> TaskDTO:
-    uow = TaskSqlAlchemyUOW(async_session_maker)
+async def get_task(id: int,uow:TaskAbstractUOW) -> TaskDTO:
     task: Task
     async with uow:
         task = await uow.tasks.get(id)
@@ -14,8 +13,7 @@ async def get_task(id: int) -> TaskDTO:
     return task_to_DTO(task)
 
 
-async def get_user_by_email(email: str):
-    uow = UserSqlAlchemyUOW(async_session_maker)
+async def get_user_by_email(email: str,uow: UserAbstractUOW) -> User:
     user: User
     async with uow:
         user = await uow.users.get(email)
@@ -23,9 +21,17 @@ async def get_user_by_email(email: str):
     return user
 
 
-async def add_user(user_dict):
-    uow = UserSqlAlchemyUOW(async_session_maker)
+async def add_user(uow: UserAbstractUOW, **user_dict):
     async with uow:
         user = User(email=user_dict["email"], password=user_dict["password"])
         uow.users.add(user)
         await uow.commit()
+
+
+async def register(email: str, password: str, uow: UserAbstractUOW) -> bool:
+    user = await get_user_by_email(email=email,uow=uow)
+    if user:
+        return False
+    password = get_password_hash(password)
+    await add_user(uow=uow,email=email,password=password)
+    return True

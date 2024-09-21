@@ -1,6 +1,8 @@
 import abc
 
 from sqlalchemy.orm import clear_mappers
+
+from src.db.session import async_session_maker
 from src.repositories.user import repository
 from src.db.orm import start_mappers
 
@@ -16,13 +18,13 @@ class AbstractUOW:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self):
+    async def rollback(self):
         raise NotImplementedError
 
 
 class SqlAlchemyUOW(AbstractUOW):
-    def __init__(self, async_session_maker) -> None:
-        self._async_session_maker = async_session_maker
+    def __init__(self, session_maker=async_session_maker) -> None:
+        self._async_session_maker = session_maker
 
     async def __aenter__(self):
         start_mappers()

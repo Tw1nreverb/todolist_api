@@ -19,7 +19,6 @@ user_table = Table(
     Column("id", Integer, primary_key=True),
     Column("email", String(100)),
     Column("password", String(100)),
-    Column('refresh_toker', String(200)),
 )
 
 

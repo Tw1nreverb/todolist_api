@@ -1,22 +1,18 @@
-from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter
 from src.logic.service import (
-    add_user,
-    get_user_by_email,
+    add_user, register,
 )
-from src.logic.hash import get_password_hash
-from src.logic.dto import AddUserDTO
+from src.uow.user.uow import SqlAlchemyUOW as UserAlchemyUOW
 
 router = APIRouter(
     prefix="/user",
     tags=["user"],
 )
 
-
 @router.post("/register")
-async def register_user():
-    return {"Hello1":1234}
+async def register_user(email:str,password:str):
+    result = await register(email=email,password=password, uow=UserAlchemyUOW())
+    return result
 
 
 @router.post("/login")

@@ -7,4 +7,4 @@ engine = create_async_engine(
     settings.DB_URL,
     echo=True,
 )
-async_session_maker = sessionmaker(engine=engine, class_=AsyncSession, expire_on_commit=False)  # pyright: ignore
+async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)  # pyright: ignore

@@ -42,3 +42,21 @@ class SqlAlchemyUOW(AbstractUOW):
 
     async def rollback(self):
         await self._session.rollback()
+
+
+class FakeUOW(AbstractUOW):
+    def __init__(self) -> None:
+        self.users = repository.FakeRepository([])
+        self.committed = False
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *args):
+        pass
+
+    async def commit(self):
+        self.committed = True
+
+    async def rollback(self):
+        pass

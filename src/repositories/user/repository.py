@@ -25,3 +25,14 @@ class SqlAlchemyRepository(AbstractRepository):
         execute = await self.session.execute(statement)
         result = execute.scalars().first()
         return result
+
+
+class FakeRepository(AbstractRepository):
+    def __init__(self, users) -> None:
+        self._users = set(users)
+
+    def add(self, user) -> None:
+        self._users.add(user)
+
+    async def get(self, email) -> User:
+        return next(user for user in self._users if user.email == email)

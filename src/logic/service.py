@@ -29,9 +29,12 @@ async def add_user(uow: UserAbstractUOW, **user_dict):
 
 
 async def register(email: str, password: str, uow: UserAbstractUOW) -> bool:
-    user = await get_user_by_email(email=email,uow=uow)
-    if user:
-        return False
+    try:
+        user = await get_user_by_email(email=email,uow=uow)
+        if user:
+            return False
+    except:
+        pass
     password = get_password_hash(password)
     await add_user(uow=uow,email=email,password=password)
     return True

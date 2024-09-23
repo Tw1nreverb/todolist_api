@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, CHAR, String, DateTime, Enum as SQLAlchemyEnum, ForeignKey
+from sqlalchemy import Table, Column,  String, DateTime, Enum as SQLAlchemyEnum, ForeignKey
 from sqlalchemy.orm import registry, relationship
 from src.domain.model import Status, Task, User
 
@@ -25,6 +25,8 @@ user_table = Table(
 
 def start_mappers():
     mapper_registry.map_imperatively(Task, task_table, properties={
-        'User': relationship("User"),
+        'user': relationship("User", back_populates="tasks"),
     })
-    mapper_registry.map_imperatively(User, user_table)
+    mapper_registry.map_imperatively(User, user_table, properties={
+        'tasks': relationship("Task", back_populates="user")
+    })

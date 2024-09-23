@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from sqlalchemy.orm import selectinload
+
 from src.domain.model import Task
 from sqlalchemy import select
 
@@ -9,7 +11,7 @@ class AbstractRepository(ABC):
     def add(self, task: Task) -> None:
         raise NotImplementedError
 
-    async def get(self, id: int) -> Task:
+    async def get(self, id: str) -> Task:
         raise NotImplementedError
 
 
@@ -22,6 +24,12 @@ class SqlAlchemyRepository(AbstractRepository):
 
     async def get(self, id) -> Task:
         statement = select(Task).filter_by(id=id)
+        execute = await self.session.execute(statement)
+        result = execute.scalars().one()
+        return result
+
+    async def get_users(self, id) -> Task:
+        statement = select(Task).filter_by(id=id).options(selectinload(Task.user))
         execute = await self.session.execute(statement)
         result = execute.scalars().one()
         return result

@@ -1,6 +1,6 @@
 from src.domain.model import Task, User
 from src.logic.dto import TaskDTO, task_to_DTO
-from src.logic.hash import get_password_hash
+from src.logic.hash import get_password_hash, verify_password
 from src.uow.task.uow import AbstractUOW as TaskAbstractUOW
 from src.uow.user.uow import AbstractUOW as UserAbstractUOW
 
@@ -38,3 +38,10 @@ async def register(email: str, password: str, uow: UserAbstractUOW) -> bool:
     password = get_password_hash(password)
     await add_user(uow=uow,email=email,password=password)
     return True
+
+async def login(email: str, password: str, uow: UserAbstractUOW) -> bool:
+    user = await get_user_by_email(email=email,uow=uow)
+    if verify_password(plain_password=password, hashed_password=user.password):
+        return True
+    else:
+        return False

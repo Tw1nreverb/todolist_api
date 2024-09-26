@@ -68,3 +68,8 @@ class EntityId:
 
     def __str__(self):
         return str(self.id)
+
+@dataclass(frozen=True)
+class RefreshToken:
+    user_id: uuid.UUID
+    refresh_token: uuid.UUID

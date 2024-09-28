@@ -16,15 +16,16 @@ router = APIRouter(
 
 
 @router.post("/register")
-async def register_user(email:str,password:str):
-    result = await register(email=email,password=password, uow=UserAlchemyUOW())
+async def register_user(email: str, password: str):
+    result = await register(email=email, password=password, uow=UserAlchemyUOW())
     return result
 
 
 @router.post("/login")
 async def login_user():
     return {"Hello": 123}
-#async def test_register_user(email: str, password: str):
+
+# async def test_register_user(email: str, password: str):
 #    result = await register(email=email, password=password, uow=UserAlchemyUOW())
 #    uow = TaskAlchemyUOW()
 #    async with uow:

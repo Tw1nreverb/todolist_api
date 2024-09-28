@@ -4,7 +4,6 @@ from src.logic.hash import get_password_hash, verify_password
 from src.uow.task.uow import AbstractUOW as TaskAbstractUOW
 from src.uow.user.uow import AbstractUOW as UserAbstractUOW
 
-
 async def get_task(id: int,uow:TaskAbstractUOW) -> TaskDTO:
     task: Task
     async with uow:

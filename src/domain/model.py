@@ -1,10 +1,6 @@
 import uuid
-from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Tuple
-
-from pydantic import BaseModel, ConfigDict
 
 
 class Status(str, Enum):
@@ -15,8 +11,9 @@ class Status(str, Enum):
 
 
 class Task:
-    def __init__(self,name: str,user_id: str, date_start: datetime | None = None, date_end: datetime | None = None) -> None:
-        self.id = uuid.uuid4()
+    def __init__(self, name: str, user_id: str, date_start: datetime | None = None,
+                 date_end: datetime | None = None) -> None:
+        self.id = str(uuid.uuid4())
         self.user_id = user_id
         self.name = name
         self.date_start = date_start if date_start else datetime.now(timezone.utc)
@@ -40,13 +37,14 @@ class Task:
         self.status = Status.in_progress
 
 
-class User(BaseModel):
-    email: str
-    password: str
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
-    model_config = ConfigDict(frozen=True)
+class User:
+    def __init__(self, email: str, password: str) -> None:
+        self.id = str(uuid.uuid4())
+        self.email = email
+        self.password = password
 
-class RefreshToken(BaseModel):
-    user_id: uuid.UUID
-    refresh_token: uuid.UUID
-    model_config = ConfigDict(frozen=True)
+
+class RefreshToken:
+    def __init__(self, user_id: str, refresh_token: str) -> None:
+        self.user_id = user_id
+        self.refresh_token = refresh_token

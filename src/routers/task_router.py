@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from src.logic.service import get_task
-from src.uow.task.uow import SqlAlchemyUOW as TaskAlchemyUOW
+from src.uow.uow import SqlAlchemyUOW as TaskAlchemyUOW
 
 router = APIRouter(
     prefix="/task",

@@ -1,10 +1,10 @@
 from src.domain.model import Task, User
 from src.logic.dto import TaskDTO, task_to_DTO
 from src.logic.hash import get_password_hash, verify_password
-from src.uow.task.uow import AbstractUOW as TaskAbstractUOW
-from src.uow.user.uow import AbstractUOW as UserAbstractUOW
+from src.uow import uow as unit_of_work
 
-async def get_task(id: int,uow:TaskAbstractUOW) -> TaskDTO:
+
+async def get_task(id: int, uow: unit_of_work.AbstractUOW) -> TaskDTO:
     task: Task
     async with uow:
         task = await uow.tasks.get(id)
@@ -12,7 +12,7 @@ async def get_task(id: int,uow:TaskAbstractUOW) -> TaskDTO:
     return task_to_DTO(task)
 
 
-async def get_user_by_email(email: str,uow: UserAbstractUOW) -> User:
+async def get_user_by_email(email: str, uow: unit_of_work.AbstractUOW) -> User:
     user: User
     async with uow:
         user = await uow.users.get(email)
@@ -20,26 +20,27 @@ async def get_user_by_email(email: str,uow: UserAbstractUOW) -> User:
     return user
 
 
-async def add_user(uow: UserAbstractUOW, **user_dict):
+async def add_user(uow: unit_of_work.AbstractUOW, **user_dict):
     async with uow:
         user = User(email=user_dict["email"], password=user_dict["password"])
         uow.users.add(user)
         await uow.commit()
 
 
-async def register(email: str, password: str, uow: UserAbstractUOW) -> bool:
+async def register(email: str, password: str, uow: unit_of_work.AbstractUOW) -> bool:
     try:
-        user = await get_user_by_email(email=email,uow=uow)
+        user = await get_user_by_email(email=email, uow=uow)
         if user:
             return False
     except:
         pass
     password = get_password_hash(password)
-    await add_user(uow=uow,email=email,password=password)
+    await add_user(uow=uow, email=email, password=password)
     return True
 
-async def login(email: str, password: str, uow: UserAbstractUOW) -> bool:
-    user = await get_user_by_email(email=email,uow=uow)
+
+async def login(email: str, password: str, uow: unit_of_work.AbstractUOW) -> bool:
+    user = await get_user_by_email(email=email, uow=uow)
     if verify_password(plain_password=password, hashed_password=user.password):
         return True
     else:

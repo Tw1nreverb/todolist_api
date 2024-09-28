@@ -1,16 +1,16 @@
 from src.domain.model import User
 from src.logic.service import register, add_user, get_user_by_email
-from src.uow.user.uow import FakeUOW
+from src.uow import uow
 
 
 async def test_register():
-    fake_uow = FakeUOW()
+    fake_uow = uow.FakeUOW()
     assert await register(email='<EMAIL>', password='<PASSWORD>', uow=fake_uow) is True
 
 
 async def test_add_user_and_get_by_email():
     user = User(email='<EMAIL>', password='<PASSWORD>')
-    fake_uow = FakeUOW()
+    fake_uow = uow.FakeUOW()
     await add_user(uow=fake_uow, email=user.email, password=user.password)
     assert fake_uow.committed is True
 

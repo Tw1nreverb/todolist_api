@@ -1,14 +1,9 @@
-from datetime import datetime, timezone
-
 from fastapi import APIRouter
 
-from src.domain.model import Task
 from src.logic.service import (
-    add_user, register,
+    register,
 )
-from src.uow.user.uow import SqlAlchemyUOW as UserAlchemyUOW
-from src.uow.task.uow import SqlAlchemyUOW as TaskAlchemyUOW
-
+from src.uow import uow as unit_of_work
 router = APIRouter(
     prefix="/user",
     tags=["user"],
@@ -17,7 +12,7 @@ router = APIRouter(
 
 @router.post("/register")
 async def register_user(email: str, password: str):
-    result = await register(email=email, password=password, uow=UserAlchemyUOW())
+    result = await register(email=email, password=password, uow=unit_of_work.SqlAlchemyUOW())
     return result
 
 

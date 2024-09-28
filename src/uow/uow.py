@@ -1,13 +1,19 @@
 import abc
 
-from src.db.orm import start_mappers
-from src.db.session import async_session_maker
-from src.repositories.token import repository
 from sqlalchemy.orm import clear_mappers
+
+from src.db.session import async_session_maker
+from src.repositories.task import repository as task_repository
+from src.repositories.user import repository as user_repository
+from src.repositories.token import repository as token_repository
+
+from src.db.orm import start_mappers
 
 
 class AbstractUOW:
-    tokens: repository.AbstractRepository
+    tasks: task_repository.AbstractRepository
+    users: user_repository.AbstractRepository
+    tokens: token_repository.AbstractRepository
 
     async def __aexit__(self, *args):
         await self.rollback()
@@ -28,7 +34,9 @@ class SqlAlchemyUOW(AbstractUOW):
     async def __aenter__(self):
         start_mappers()
         self._session = self._async_session_maker()
-        self.users = repository.SqlAlchemyRepository(self._session)
+        self.tasks = task_repository.SqlAlchemyRepository(self._session)
+        self.tokens = token_repository.SqlAlchemyRepository(self._session)
+        self.users = user_repository.SqlAlchemyRepository(self._session)
         return self
 
     async def __aexit__(self, *args):
@@ -45,7 +53,9 @@ class SqlAlchemyUOW(AbstractUOW):
 
 class FakeUOW(AbstractUOW):
     def __init__(self) -> None:
-        self.users = repository.FakeRepository([])
+        self.tasks = task_repository.FakeRepository([])
+        self.users = user_repository.FakeRepository([])
+        self.tokens = token_repository.FakeRepository([])
         self.committed = False
 
     async def __aenter__(self):

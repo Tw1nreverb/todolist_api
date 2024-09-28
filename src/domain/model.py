@@ -4,6 +4,8 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Tuple
 
+from pydantic import BaseModel, ConfigDict
+
 
 class Status(str, Enum):
     in_progress = "in_progress"
@@ -13,13 +15,7 @@ class Status(str, Enum):
 
 
 class Task:
-    def __init__(
-            self,
-            name: str,
-            user_id: str,
-            date_start: datetime | None = None,
-            date_end: datetime | None = None,
-    ) -> None:
+    def __init__(self,name: str,user_id: str, date_start: datetime | None = None, date_end: datetime | None = None) -> None:
         self.id = uuid.uuid4()
         self.user_id = user_id
         self.name = name
@@ -44,15 +40,13 @@ class Task:
         self.status = Status.in_progress
 
 
-
-@dataclass(frozen=True)
-class User:
+class User(BaseModel):
     email: str
     password: str
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+    model_config = ConfigDict(frozen=True)
 
-
-@dataclass(frozen=True)
-class RefreshToken:
+class RefreshToken(BaseModel):
     user_id: uuid.UUID
     refresh_token: uuid.UUID
+    model_config = ConfigDict(frozen=True)

@@ -35,5 +35,5 @@ class FakeRepository(AbstractRepository):
     def add(self, task) -> None:
         self._tokens.add(task)
 
-    async def get(self, refresh_token) -> RefreshToken:
-        return next(token for token in self._tokens if token.refresh_token == refresh_token)
+    async def get(self, refresh_token: str) -> RefreshToken:
+        return next(token for token in self._tokens if str(token.refresh_token) == refresh_token)

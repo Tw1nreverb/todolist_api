@@ -1,7 +1,7 @@
 import uuid
 from typing import Union
 
-from src.domain.model import Task, User, RefreshToken, EntityId
+from src.domain.model import Task, User, RefreshToken
 from src.logic.dto import TaskDTO, task_to_DTO
 from src.logic.hash import get_password_hash, verify_password
 from src.uow import uow as unit_of_work
@@ -46,7 +46,7 @@ async def login(email: str, password: str, uow: unit_of_work.AbstractUOW) -> Uni
     user = await get_user_by_email(email=email, uow=uow)
     if verify_password(plain_password=password, hashed_password=user.password):
         async with uow:
-            refresh_token = RefreshToken(user_id=uuid.UUID(user.id),refresh_token=EntityId.new().id)
+            refresh_token = RefreshToken(user_id=user.id,refresh_token=uuid.uuid4())
             uow.tokens.add(refresh_token)
             await uow.commit()
         return {'refresh_token':refresh_token}

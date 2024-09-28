@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Tuple
@@ -20,7 +20,7 @@ class Task:
             date_start: datetime | None = None,
             date_end: datetime | None = None,
     ) -> None:
-        self.id = str(EntityId.new())
+        self.id = uuid.uuid4()
         self.user_id = user_id
         self.name = name
         self.date_start = date_start if date_start else datetime.now(timezone.utc)
@@ -44,30 +44,13 @@ class Task:
         self.status = Status.in_progress
 
 
-class User:
-    def __init__(self, email: str, password: str) -> None:
-        self.id = str(EntityId.new())
-        self.email = email
-        self.password = password
-
 
 @dataclass(frozen=True)
-class EntityId:
-    id: uuid.UUID
+class User:
+    email: str
+    password: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
 
-    def __composite_values__(self) -> Tuple[str]:
-        return (str(self),)
-
-    @classmethod
-    def new(cls) -> "EntityId":
-        return EntityId(uuid.uuid4())
-
-    @classmethod
-    def of(cls, id: str) -> "EntityId":
-        return cls(uuid.UUID(hex=id, version=4))
-
-    def __str__(self):
-        return str(self.id)
 
 @dataclass(frozen=True)
 class RefreshToken:
